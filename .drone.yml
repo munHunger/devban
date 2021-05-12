@@ -1,0 +1,8 @@
+kind: pipeline
+type: kubernetes
+steps:
+  - name: test
+    image: node:alpine
+    commands:
+      - npm install
+      - npm audit
