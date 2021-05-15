@@ -4,5 +4,6 @@ steps:
   - name: test
     image: node:alpine
     commands:
+      - cd server
       - npm install
       - npm audit
