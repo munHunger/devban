@@ -73,7 +73,7 @@ spec:
         app: mongo
     spec: # pod spec
       volumes:
-        - name: mongo-pv
+        - name: mongo-devban-pv
           persistentVolumeClaim:
             claimName: mongo-pvc
         - name: podinfo
@@ -89,7 +89,7 @@ spec:
             - containerPort: 27017
           volumeMounts:
             - mountPath: '/data/db'
-              name: mongo-pv
+              name: mongo-devban-pv
             - mountPath: '/etc/podinfo'
               name: podinfo
           env:
@@ -141,8 +141,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: mongo-pv
-  namespace: devban
+  name: mongo-devban-pv
   labels:
     type: local
 spec:
@@ -194,7 +193,7 @@ spec:
   ports:
     - protocol: TCP
       port: 8081
-      nodePort: 31012
+      nodePort: 32012
       targetPort: 8081
       name: mongo-express
   type: LoadBalancer
@@ -210,7 +209,7 @@ spec:
   ports:
     - protocol: TCP
       port: 3000
-      nodePort: 31011
+      nodePort: 32011
       targetPort: 3000
       name: node
   type: LoadBalancer
