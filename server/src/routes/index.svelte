@@ -22,16 +22,21 @@
 </script>
 
 <script>
-  import { Card, List } from '../components/issue/';
+  import { Card, List, CardEdit } from '../components/issue/';
   import { board } from '$lib/data';
   import { ItemFrontend } from '$lib/type/item/itemFrontend';
+  import { Item } from '$lib/type/item/item';
+  import { Button } from '../components/form';
 
   export let project;
 
   board.set(project);
+
+  let newItem = false;
 </script>
 
 <div class="p-4">
+  <Button color="blue" on:click={() => (newItem = true)}>new item</Button>
   {#if $board}
     {#each $board.getStatuses() || [] as status}
       <List title={status} color={$board.getStatusList(status).color}>
@@ -42,5 +47,12 @@
         {/each}
       </List>
     {/each}
+  {/if}
+  {#if newItem}
+    <CardEdit
+      item={new ItemFrontend()}
+      onSave={() => (newItem = false)}
+      onCancel={() => (newItem = false)}
+    />
   {/if}
 </div>

@@ -17,11 +17,19 @@ export class ItemFrontend extends Item {
   }
 
   async save(client: Client) {
-    logger.child({ item: this }).info('saving item');
-    await client.put(`/item/${this.id}.json`, this).then((res) => {
-      if (res.status === 204) logger.child({ item: this, res }).info('saved');
-      else logger.child({ item: this, res }).error('error saving');
-    });
+    if (this.id) {
+      logger.child({ item: this }).info('saving item');
+      await client.put(`/item/${this.id}.json`, this).then((res) => {
+        if (res.status === 204) logger.child({ item: this, res }).info('saved');
+        else logger.child({ item: this, res }).error('error saving');
+      });
+    } else {
+      logger.child({ item: this }).info('creating item');
+      await client.post(`/item.json`, this).then((res) => {
+        if (res.status === 204) logger.child({ item: this, res }).info('saved');
+        else logger.child({ item: this, res }).error('error saving');
+      });
+    }
   }
 
   async updateStatus(client: Client, status: string) {

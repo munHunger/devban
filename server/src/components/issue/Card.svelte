@@ -6,6 +6,7 @@
   import { quintOut } from 'svelte/easing';
   import { crossfade } from 'svelte/transition';
   import { Client } from '$lib/client';
+  import CardEdit from './CardEdit.svelte';
 
   export const fade = crossfade({
     duration: (d) => Math.sqrt(d * 200),
@@ -43,14 +44,9 @@
     console.log('stopped dragging');
   }
 
-  let openDetails = false;
+  export let openDetails = false;
   function onClick() {
     openDetails = true;
-  }
-
-  async function save() {
-    await item.save(new Client());
-    openDetails = false;
   }
 </script>
 
@@ -69,15 +65,5 @@
 </div>
 
 {#if openDetails}
-  <Modal>
-    <div>
-      #{item.id}
-      <div class="inline-block" contenteditable bind:textContent={item.title} />
-    </div>
-    <textarea bind:value={item.description} />
-    <div class="flex justify-end">
-      <Button color="green" on:click={save}>save</Button>
-      <Button color="red" on:click={() => (openDetails = false)}>cancel</Button>
-    </div>
-  </Modal>
+  <CardEdit bind:item onSave={() => (openDetails = false)} onCancel={() => (openDetails = false)} />
 {/if}
