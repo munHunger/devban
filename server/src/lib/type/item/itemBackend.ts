@@ -1,19 +1,15 @@
 import mongo from '$lib/mongo';
 import { logger } from '$lib/logger';
+import { Item } from './item';
 
-export class Item {
-  id: string;
-  title: string;
-  description: string;
-  labels: Array<string>;
-  status: string;
-
+export class ItemBackend extends Item {
   constructor(data: Item) {
+    super();
     Object.assign(this, data);
   }
 
   async save(db) {
-    if (!this.id) this.id = await Item.getID(db);
+    if (!this.id) this.id = await ItemBackend.getID(db);
     logger.info(`saving item id=${this.id}`);
     return mongo
       .resolveCollection(db, 'items')
@@ -23,12 +19,17 @@ export class Item {
   }
 
   static async getSingle(db, id: string) {
-    return mongo.resolveCollection(db, 'items').then((collection) => collection.findOne({ id }));
+    return mongo
+      .resolveCollection(db, 'items')
+      .then((collection) => collection.findOne({ id }, { projection: { _id: 0 } }));
   }
+
   static async getMany(db, id: Array<string>) {
     return mongo
       .resolveCollection(db, 'items')
-      .then((collection) => collection.find({ id: { $in: id } }).toArray());
+      .then((collection) =>
+        collection.find({ id: { $in: id } }, { projection: { _id: 0 } }).toArray()
+      );
   }
 
   static async init(db) {

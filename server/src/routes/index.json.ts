@@ -1,6 +1,7 @@
 import mongo from '$lib/mongo';
 import { logger } from '$lib/logger';
-import { Item } from '$lib/type/item';
+import type { Item } from '$lib/type/item/item';
+import { ItemBackend } from '$lib/type/item/itemBackend';
 
 async function getBoard(name) {
   return await mongo.collection(name, 'board').then((collection) =>
@@ -43,14 +44,14 @@ export const get = async (page) => {
         { upsert: true }
       )
     );
-    await Item.init(db);
+    await ItemBackend.init(db);
     board = await getBoard(name);
   }
   await Promise.all(
     Object.keys(board.status)
       .filter((status) => board.status[status].items.length > 0)
       .map(async (status) => {
-        board.status[status].items = await Item.getMany(db, board.status[status].items);
+        board.status[status].items = await ItemBackend.getMany(db, board.status[status].items);
       })
   );
   console.log(board.status);

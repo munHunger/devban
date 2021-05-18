@@ -1,6 +1,8 @@
 import mongo from '$lib/mongo';
 import { logger } from '$lib/logger';
-import { Item } from '$lib/type/item';
+import type { Item } from '$lib/type/item/item';
+import { ItemBackend } from '$lib/type/item/itemBackend';
+
 let name = 'devban';
 async function getBoard(name) {
   return await mongo.collection(name, 'board').then((collection) =>
@@ -43,7 +45,7 @@ export let put = async (req) => {
 export let post = async (req) => {
   let body = req.body;
   let db = await mongo.db(name);
-  let item = new Item(body as Item);
+  let item = new ItemBackend(body as Item);
   await item.save(db);
   let push = {};
   push[`status.${item.status}.items`] = item.id;
