@@ -9,7 +9,10 @@ export class ItemBackend extends Item {
   }
 
   async save(db) {
-    if (!this.id) this.id = await ItemBackend.getID(db);
+    if (!this.id) {
+      this.id = await ItemBackend.getID(db);
+      this.inititalizeNew();
+    }
     logger.info(`saving item id=${this.id}`);
     return mongo
       .resolveCollection(db, 'items')
@@ -18,10 +21,13 @@ export class ItemBackend extends Item {
       );
   }
 
-  static async getSingle(db, id: string) {
+  static async getSingle(db, id: string): Promise<ItemBackend> {
     return mongo
       .resolveCollection(db, 'items')
-      .then((collection) => collection.findOne({ id }, { projection: { _id: 0 } }));
+      .then(
+        async (collection) =>
+          new ItemBackend(await collection.findOne({ id }, { projection: { _id: 0 } }))
+      );
   }
 
   static async getMany(db, id: Array<string>) {

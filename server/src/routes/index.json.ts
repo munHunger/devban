@@ -2,6 +2,7 @@ import mongo from '$lib/mongo';
 import { logger } from '$lib/logger';
 import type { Item } from '$lib/type/item/item';
 import { ItemBackend } from '$lib/type/item/itemBackend';
+import { Config } from '$lib/type/config';
 
 async function getBoard(name) {
   return await mongo.collection(name, 'board').then((collection) =>
@@ -14,6 +15,7 @@ async function getBoard(name) {
 export const get = async (page) => {
   let name = 'devban';
   let db = await mongo.db(name);
+  Config.readConfig(db);
   logger.info(`fetching list=${name}`);
   let board = await getBoard(name);
   if (!board) {
