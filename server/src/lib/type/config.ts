@@ -1,7 +1,10 @@
 import mongo from '$lib/mongo';
 import { logger } from '$lib/logger';
+import auth from 'munhunger-auth-api';
 export class Config {
   static version: number = 1;
+
+  authSecret: AuthConfig;
 
   item: ItemConfig;
 
@@ -9,19 +12,38 @@ export class Config {
     Object.assign(this, config);
   }
 
-  public static async readConfig(db) {
+  public static async setAuthSecret(db, auth) {
+    logger.info('registering service secret');
+    console.log(auth);
+    await mongo
+      .resolveCollection(db, 'config')
+      .then((collection) =>
+        collection.updateOne({ name: 'auth' }, { $set: { authSecret: auth } }, { upsert: true })
+      );
+  }
+  public static async readConfig(db): Promise<Config> {
+    logger.info('reading config');
     return mongo.resolveCollection(db, 'config').then(async (collection) => {
       let itemConfig = await collection.findOne({ name: 'item' }, { projection: { _id: 0 } });
       if (!itemConfig) {
+        logger.info('item configuration did not exist');
         await Config.createConfig(db);
         return this.readConfig(db);
       }
-      return new Config(itemConfig);
+      let authSecret = await collection.findOne({ name: 'auth' });
+      if (!authSecret) {
+        logger.info('auth secret did not exist');
+        let newAuth = await auth.registerService('devban', 'https://devban.munhunger.com/auth');
+        await Config.setAuthSecret(db, newAuth);
+        return this.readConfig(db);
+      }
+      return new Config({ item: itemConfig, authSecret: authSecret } as any);
     });
   }
   private static async createConfig(db) {
-    mongo.resolveCollection(db, 'config').then((collection) =>
-      collection.updateOne(
+    logger.info('creating configuration');
+    mongo.resolveCollection(db, 'config').then(async (collection) => {
+      await collection.updateOne(
         {
           name: 'item'
         },
@@ -31,9 +53,13 @@ export class Config {
           }
         },
         { upsert: true }
-      )
-    );
+      );
+    });
   }
+}
+
+export class AuthConfig {
+  authSecret: string;
 }
 
 export class ItemConfig {

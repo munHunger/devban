@@ -1,4 +1,4 @@
-<script context="module" lang="ts">
+<script context="module">
   import { Board } from '$lib/type/board';
   /**
    * @type {import('@sveltejs/kit').Load}
@@ -27,15 +27,25 @@
   import { ItemFrontend } from '$lib/type/item/itemFrontend';
   import { Item } from '$lib/type/item/item';
   import { Button } from '../components/form';
+  import { goto } from '$app/navigation';
 
   export let project;
 
   board.set(project);
 
   let newItem = false;
+
+  function login() {
+    console.log('logging in');
+    window
+      .fetch('/login.json')
+      .then((data) => data.json())
+      .then((data) => (window.location = data.url));
+  }
 </script>
 
 <div class="p-4">
+  <Button color="blue" on:click={login}>login</Button>
   <Button color="blue" on:click={() => (newItem = true)}>new item</Button>
   {#if $board}
     {#each $board.getStatuses() || [] as status}

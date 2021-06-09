@@ -1,5 +1,5 @@
 {
-  "name": "~TODO~",
+  "name": "devban",
   "version": "0.0.1",
   "scripts": {
     "dev": "svelte-kit dev",
@@ -30,7 +30,8 @@
     "tailwindcss": "^2.1.1",
     "tslib": "^2.0.0",
     "typescript": "^4.0.0",
-    "winston": "^3.3.3"
+    "winston": "^3.3.3",
+    "munhunger-auth-api": "0.0.5"
   },
   "type": "module"
 }
