@@ -38,6 +38,8 @@ spec:
           image: munhunger/devban:server
           imagePullPolicy: 'Always'
           env:
+            - name: DEVBAN_HOST
+              value: https://devban.munhunger.com
             - name: MONGO_URL
               value: mongodb://mongo:27017
             - name: MONGO_PASSWORD
