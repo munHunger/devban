@@ -22,7 +22,7 @@ steps:
   - name: deploy
     image: sinlead/drone-kubectl
     commands:
-      - kubectl --namespace="auth" rollout restart deployment/node
+      - kubectl --namespace="devban" rollout restart deployment/node
 ---
 kind: secret
 name: username
