@@ -19,7 +19,6 @@
   import { session } from '$app/stores';
   export let token;
   const store = new Store($session);
-  getContext<Store>('store');
 
   onMount(() => {
     if (token) {

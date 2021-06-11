@@ -14,7 +14,7 @@ export const get = async (page) => {
   logger.info(`requesting jwt`, { serviceSecret, token });
   let jwt = await auth.auth('devban', token, serviceSecret, jwtSecret);
   if (jwt) {
-    logger.info('authentication successful', { jwt });
+    logger.info('authentication successful', { user: auth.verify(jwt, jwtSecret) });
     page.locals.jwt = jwt;
     return {
       headers: {

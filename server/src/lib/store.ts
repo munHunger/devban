@@ -3,10 +3,12 @@ import { Writable, writable } from 'svelte/store';
 export interface stateType {
   authenticated: boolean;
   token: string;
+  user: any;
 }
 export const defaultState: stateType = {
   authenticated: false,
-  token: null
+  token: null,
+  user: undefined
 };
 
 export default class Store {

@@ -26,6 +26,7 @@ export const getSession = async (req) => {
     let user = auth.verify(token, jwtSecret);
     logger.info(`authenticated user`, { user });
     initialState.authenticated = user !== undefined;
+    initialState.user = user;
     initialState.token = token;
   }
   return initialState;
