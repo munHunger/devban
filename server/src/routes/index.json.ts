@@ -12,11 +12,11 @@ async function getBoard(name) {
   );
 }
 
-export const get = async (page) => {
+export const get = async (req) => {
   let name = 'devban';
   let db = await mongo.db(name);
   Config.readConfig(db);
-  logger.info(`fetching list=${name}`);
+  logger.info(`fetching list`, { name });
   let board = await getBoard(name);
   if (!board) {
     let db = await mongo.db(name);
@@ -56,7 +56,6 @@ export const get = async (page) => {
         board.status[status].items = await ItemBackend.getMany(db, board.status[status].items);
       })
   );
-  console.log(board.status);
   return {
     body: board
   };

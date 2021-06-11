@@ -4,6 +4,7 @@
    * @type {import('@sveltejs/kit').Load}
    */
   export async function load({ page, fetch, session, context }) {
+    console.log('index.svelte session:' + JSON.stringify(session));
     let url = `/index.json`;
     const res = await fetch(url);
     if (res.ok) {

@@ -13,8 +13,20 @@ export const get = async (page) => {
   let serviceSecret = (await Config.readConfig(db)).authSecret.authSecret;
   logger.info(`requesting jwt`, { serviceSecret, token });
   let jwt = await auth.auth('devban', token, serviceSecret, jwtSecret);
-  logger.info('authentication successful', { jwt });
-  return {
-    body: {}
-  };
+  if (jwt) {
+    logger.info('authentication successful', { jwt });
+    page.locals.jwt = jwt;
+    return {
+      headers: {
+        'Set-Cookie': `token=${jwt}`
+      },
+      body: jwt,
+      status: 200
+    };
+  } else {
+    logger.warn(`invalid JWT from auth`, { jwt });
+    return {
+      status: 403
+    };
+  }
 };
