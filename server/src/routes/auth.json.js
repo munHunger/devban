@@ -1,5 +1,5 @@
 import mongo from '$lib/mongo';
-import logger from '$lib/logger';
+import { logger } from '$lib/logger';
 import { authServiceName, Config, jwtSecret } from '$lib/type/config';
 import auth from 'munhunger-auth-api';
 

@@ -1,4 +1,4 @@
-import logger from '$lib/logger';
+import { logger } from '$lib/logger';
 import { authServiceName, devbanHost } from '$lib/type/config';
 import auth from 'munhunger-auth-api';
 
