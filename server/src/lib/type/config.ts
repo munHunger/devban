@@ -2,8 +2,9 @@ import mongo from '$lib/mongo';
 import { logger } from '$lib/logger';
 import auth from 'munhunger-auth-api';
 
-const devbanHost = process.env['DEVBAN_HOST'] || 'http://localhost:3000';
-
+export const devbanHost = process.env['DEVBAN_HOST'] || 'http://localhost:3000';
+export const jwtSecret = process.env['JWT_SECRET'] || 'secret';
+export const authServiceName = (process.env['DEVBAN_HOST'] && 'devban') || 'devban-dev';
 export class Config {
   static version: number = 1;
 
@@ -17,7 +18,6 @@ export class Config {
 
   public static async setAuthSecret(db, auth) {
     logger.info('registering service secret');
-    console.log(auth);
     await mongo
       .resolveCollection(db, 'config')
       .then((collection) =>
@@ -36,7 +36,7 @@ export class Config {
       let authSecret = await collection.findOne({ name: 'auth' });
       if (!authSecret) {
         logger.info('auth secret did not exist');
-        let newAuth = await auth.registerService('devban', devbanHost + '/auth');
+        let newAuth = await auth.registerService(authServiceName, devbanHost + '/auth');
         await Config.setAuthSecret(db, newAuth);
         return this.readConfig(db);
       }

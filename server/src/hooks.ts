@@ -1,9 +1,9 @@
 import { logger } from '$lib/logger';
 import { defaultState } from '$lib/store';
+import { jwtSecret } from '$lib/type/config';
 import * as cookie from 'cookie';
 import auth from 'munhunger-auth-api';
 
-const jwtSecret = process.env['JWT_SECRET'] || 'secret';
 export async function handle({ request, resolve }) {
   const headers = request.headers;
   const cookies = cookie.parse(headers.cookie || '');
