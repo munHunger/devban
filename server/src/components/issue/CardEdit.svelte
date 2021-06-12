@@ -1,4 +1,5 @@
 <script>
+  import md5 from 'md5';
   import Modal from '../modal/Modal.svelte';
   import { Button } from '../form';
   import { Client } from '$lib/client';
@@ -19,16 +20,16 @@
   <div class="flex flex-row">
     <div class="flex-1">
       <div>
-        #{item.id}
-        <div class="inline-block" contenteditable bind:textContent={item.title} />
+        {#if item.id}#{item.id}{/if}
+        <div class="block" contenteditable bind:textContent={item.title} />
       </div>
-      <textarea bind:value={item.description} />
+      <textarea bind:value={item.description} rows="12" cols="48" class="resize-none" />
     </div>
     <div class="flex-initial">
-      <div class="p-2">
+      <div class="p-2 w-80">
         {#each item.events || [] as event}
           <div class="flex flex-row">
-            <div class="flex-1">
+            <div class="w-6 h-6">
               {#if event.actor.serviceAccount}
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -44,6 +45,12 @@
                     d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"
                   />
                 </svg>
+              {:else if event.actor.email}
+                <img
+                  class="w-6 h-6 rounded-full block"
+                  src={`https://www.gravatar.com/avatar/${md5(event.actor.email || '')}`}
+                  alt="profileImage"
+                />
               {/if}
             </div>
             <div class="flex-auto mx-4">

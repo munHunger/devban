@@ -9,9 +9,9 @@ export async function handle({ request, resolve }) {
   const cookies = cookie.parse(headers.cookie || '');
   request.locals.token = cookies['token'];
   if (request.locals.token) {
-    let user = auth.verify(request.locals.token, jwtSecret);
-    request.locals.authenticated = user !== undefined;
-    logger.debug('authenticated', user);
+    request.locals.user = auth.verify(request.locals.token, jwtSecret);
+    request.locals.authenticated = request.locals.user !== undefined;
+    logger.debug('authenticated', request.locals.user);
   }
   const response = await resolve(request);
   return {

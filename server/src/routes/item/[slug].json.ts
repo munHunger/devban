@@ -14,19 +14,25 @@ async function getBoard(name) {
   );
 }
 export let put = async (req) => {
+  let locals = req.locals;
   let body = req.body;
   let db = await mongo.db(name);
 
   let item = new ItemBackend(body);
-  console.log(body);
   let old = await ItemBackend.getSingle(db, item.id);
-  logger.info(`updating item=${item.id}`);
+  if (!locals.authenticated) {
+    logger.warn('attempted update from unauthenticated user', {
+      item: { id: item.id, title: item.title }
+    });
+    return {
+      status: 403
+    };
+  }
+  let user = locals.user;
+  logger.info(`updating item=${item.id}`, { user, item: { id: item.id } });
   item.addEvent(
     new Event({
-      actor: new User({
-        name: 'munhunger',
-        serviceAccount: false
-      }),
+      actor: User.fromLocals(user),
       description: 'Updated item',
       metadata: old.diff(item)
     } as Event)

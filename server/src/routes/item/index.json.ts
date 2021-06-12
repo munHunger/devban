@@ -14,6 +14,7 @@ async function getBoard(name) {
   );
 }
 export let put = async (req) => {
+  let locals = req.locals;
   let db = await mongo.db(name);
   let body = req.body;
 
@@ -21,8 +22,20 @@ export let put = async (req) => {
   let oldStatus = Object.keys(board.status).find((status) =>
     board.status[status].items.find((item) => item === body.id)
   );
+
+  if (!locals.authenticated) {
+    logger.warn('attempted move from unauthenticated user', {
+      item: { id: body.id }
+    });
+    return {
+      status: 403
+    };
+  }
+  let user = locals.user;
+
   logger.info(
-    `updating item=${body.id}, setting status='${body.newStatus}' from oldStatus='${oldStatus}'`
+    `updating item=${body.id}, setting status='${body.newStatus}' from oldStatus='${oldStatus}'`,
+    { user, item: { id: body.id, newStatus: body.newStatus, oldStatus } }
   );
   let push = {};
   push[`status.${body.newStatus}.items`] = body.id;
@@ -32,10 +45,7 @@ export let put = async (req) => {
   let item = await ItemBackend.getSingle(db, body.id);
   item.addEvent(
     new Event({
-      actor: new User({
-        name: 'munhunger',
-        serviceAccount: false
-      }),
+      actor: User.fromLocals(user),
       description: 'moved item',
       metadata: { status: { a: oldStatus, b: body.newStatus } }
     } as Event)
