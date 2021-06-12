@@ -21,7 +21,7 @@
 <div class="relative my-2" on:drop={handleDragDrop} ondragover="return false">
   <div class="{bg} inline-block px-2 text-white rounded-t-md">{title}</div>
   <div class="{bg} h-full top-0 absolute w-2 rounded-bl-md rounded-t-md" />
-  <div class="pl-1 z-10 relative">
+  <div class="pl-1 relative">
     <slot />
   </div>
 </div>
