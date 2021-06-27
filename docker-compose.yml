@@ -1,7 +1,7 @@
-version: '3.9'
+version: "3.9"
 services:
   mongo:
-    image: mongo
+    image: mongo:4.2
     ports:
       - 27017:27017
     environment:
@@ -9,7 +9,7 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: example
 
   mongo-express:
-    image: mongo-express
+    image: mongo-express:0.54
     ports:
       - 8081:8081
     environment:
