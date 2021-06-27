@@ -3,7 +3,6 @@ import { logger } from '$lib/logger';
 import auth from 'munhunger-auth-api';
 
 export const devbanHost = process.env['DEVBAN_HOST'] || 'http://localhost:3000';
-export const jwtSecret = process.env['JWT_SECRET'] || 'secret';
 export const authServiceName = (process.env['DEVBAN_HOST'] && 'devban') || 'devban-dev';
 export class Config {
   static version: number = 1;
