@@ -1,6 +1,6 @@
 import mongo from '$lib/mongo';
 import { logger } from '$lib/logger';
-import { authServiceName, Config, jwtSecret } from '$lib/type/config';
+import { authServiceName, Config } from '$lib/type/config';
 import auth from 'munhunger-auth-api';
 
 export const get = async (page) => {
@@ -11,9 +11,9 @@ export const get = async (page) => {
   token = decodeURIComponent(token);
   let serviceSecret = (await Config.readConfig(db)).authSecret.authSecret;
   logger.info(`requesting jwt`, { serviceSecret, token });
-  let jwt = await auth.auth(authServiceName, token, serviceSecret, jwtSecret);
+  let jwt = await auth.auth(authServiceName, token, serviceSecret);
   if (jwt) {
-    logger.info('authentication successful', { user: auth.verify(jwt, jwtSecret) });
+    logger.info('authentication successful', { user: await auth.verify(jwt) });
     page.locals.jwt = jwt;
     return {
       headers: {

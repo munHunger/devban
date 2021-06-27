@@ -1,6 +1,5 @@
 import { logger } from '$lib/logger';
 import { defaultState } from '$lib/store';
-import { jwtSecret } from '$lib/type/config';
 import * as cookie from 'cookie';
 import auth from 'munhunger-auth-api';
 
@@ -9,7 +8,7 @@ export async function handle({ request, resolve }) {
   const cookies = cookie.parse(headers.cookie || '');
   request.locals.token = cookies['token'];
   if (request.locals.token) {
-    request.locals.user = auth.verify(request.locals.token, jwtSecret);
+    request.locals.user = await auth.verify(request.locals.token);
     request.locals.authenticated = request.locals.user !== undefined;
     logger.debug('authenticated', request.locals.user);
   }
@@ -23,7 +22,7 @@ export const getSession = async (req) => {
   let initialState = { ...defaultState };
   let token = req.locals.token;
   if (token) {
-    let user = auth.verify(token, jwtSecret);
+    let user = await auth.verify(token);
     logger.info(`authenticated user`, { user });
     initialState.authenticated = user !== undefined;
     initialState.user = user;
